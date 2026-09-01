@@ -1,18 +1,14 @@
-from fastapi import FastAPI
-from sentence_transformers import SentenceTransformer
-import groq
-import os
-from dotenv import load_dotenv
+"""Entry point kompatibel: `uvicorn main:app --reload` atau `python main.py`.
 
-load_dotenv()
+Implementasi sesungguhnya di `app/main.py` (paket `app`).
+Port default 5001 supaya tidak bentrok dengan Laravel (8000).
+"""
+from __future__ import annotations
 
-app = FastAPI(title="EJT AI Core")
+from app.main import app
 
-print("Memuat model BAAI/bge-small-en-v1.5...")
-# Model ini akan diunduh otomatis jika belum ada di cache lokal
-embedding_model = SentenceTransformer("BAAI/bge-small-en-v1.5")
-groq_client = groq.Groq(api_key=os.getenv("GROQ_API_KEY"))
+__all__ = ["app"]
 
-@app.get("/")
-def read_root():
-    return {"status": "FastAPI berjalan, model BAAI siap digunakan!"}
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=5001, reload=True)
